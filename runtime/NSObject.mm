@@ -2049,6 +2049,7 @@ void arr_init(void)
 }
 
 + (BOOL)isMemberOfClass:(Class)cls {
+//    直接去获取元类判断是否相等 没有循环去找元类父类的过程
     return object_getClass((id)self) == cls;
 }
 
@@ -2057,6 +2058,7 @@ void arr_init(void)
 }
 
 + (BOOL)isKindOfClass:(Class)cls {
+//    先去获取到元类 tcls = meta-Classs 循环去找tcls是否等于cls 如果不等的话就去找tcls的父类直到tcls为nil
     for (Class tcls = object_getClass((id)self); tcls; tcls = tcls->superclass) {
         if (tcls == cls) return YES;
     }

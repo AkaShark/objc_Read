@@ -50,9 +50,9 @@ public:
 
 
 struct cache_t {
-    struct bucket_t *_buckets;
-    mask_t _mask;
-    mask_t _occupied;
+    struct bucket_t *_buckets; // 结构体中存储了一个unsigned long 和一个IMP IMP是一个函数指针 指向了一个方法的实现 cache_t中的bucket_t 其实是一个散列表 用来存储Method的链表
+    mask_t _mask; // 分配用来缓存bucket的总数
+    mask_t _occupied; // 表明目前实际占用的缓存bucket个数
 
 public:
     struct bucket_t *buckets();
