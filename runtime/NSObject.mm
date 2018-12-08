@@ -46,57 +46,6 @@
 @end
 
 
-#if TARGET_OS_MAC
-
-// NSObject used to be in Foundation/CoreFoundation.
-
-#define SYMBOL_ELSEWHERE_IN_3(sym, vers, n)                             \
-    OBJC_EXPORT const char elsewhere_ ##n __asm__("$ld$hide$os" #vers "$" #sym); const char elsewhere_ ##n = 0
-#define SYMBOL_ELSEWHERE_IN_2(sym, vers, n)     \
-    SYMBOL_ELSEWHERE_IN_3(sym, vers, n)
-#define SYMBOL_ELSEWHERE_IN(sym, vers)                  \
-    SYMBOL_ELSEWHERE_IN_2(sym, vers, __COUNTER__)
-
-#if __OBJC2__
-# define NSOBJECT_ELSEWHERE_IN(vers)                       \
-    SYMBOL_ELSEWHERE_IN(_OBJC_CLASS_$_NSObject, vers);     \
-    SYMBOL_ELSEWHERE_IN(_OBJC_METACLASS_$_NSObject, vers); \
-    SYMBOL_ELSEWHERE_IN(_OBJC_IVAR_$_NSObject.isa, vers)
-#else
-# define NSOBJECT_ELSEWHERE_IN(vers)                       \
-    SYMBOL_ELSEWHERE_IN(.objc_class_name_NSObject, vers)
-#endif
-
-#if TARGET_OS_IOS
-    NSOBJECT_ELSEWHERE_IN(5.1);
-    NSOBJECT_ELSEWHERE_IN(5.0);
-    NSOBJECT_ELSEWHERE_IN(4.3);
-    NSOBJECT_ELSEWHERE_IN(4.2);
-    NSOBJECT_ELSEWHERE_IN(4.1);
-    NSOBJECT_ELSEWHERE_IN(4.0);
-    NSOBJECT_ELSEWHERE_IN(3.2);
-    NSOBJECT_ELSEWHERE_IN(3.1);
-    NSOBJECT_ELSEWHERE_IN(3.0);
-    NSOBJECT_ELSEWHERE_IN(2.2);
-    NSOBJECT_ELSEWHERE_IN(2.1);
-    NSOBJECT_ELSEWHERE_IN(2.0);
-#elif TARGET_OS_OSX
-    NSOBJECT_ELSEWHERE_IN(10.7);
-    NSOBJECT_ELSEWHERE_IN(10.6);
-    NSOBJECT_ELSEWHERE_IN(10.5);
-    NSOBJECT_ELSEWHERE_IN(10.4);
-    NSOBJECT_ELSEWHERE_IN(10.3);
-    NSOBJECT_ELSEWHERE_IN(10.2);
-    NSOBJECT_ELSEWHERE_IN(10.1);
-    NSOBJECT_ELSEWHERE_IN(10.0);
-#else
-    // NSObject has always been in libobjc on these platforms.
-#endif
-
-// TARGET_OS_MAC
-#endif
-
-
 /***********************************************************************
 * Weak ivar support
 **********************************************************************/
@@ -2049,7 +1998,6 @@ void arr_init(void)
 }
 
 + (BOOL)isMemberOfClass:(Class)cls {
-//    直接去获取元类判断是否相等 没有循环去找元类父类的过程
     return object_getClass((id)self) == cls;
 }
 
@@ -2058,7 +2006,6 @@ void arr_init(void)
 }
 
 + (BOOL)isKindOfClass:(Class)cls {
-//    先去获取到元类 tcls = meta-Classs 循环去找tcls是否等于cls 如果不等的话就去找tcls的父类直到tcls为nil
     for (Class tcls = object_getClass((id)self); tcls; tcls = tcls->superclass) {
         if (tcls == cls) return YES;
     }
